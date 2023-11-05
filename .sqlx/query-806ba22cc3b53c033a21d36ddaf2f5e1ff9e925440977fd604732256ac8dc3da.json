@@ -1,0 +1,57 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT data.temperature, data.location, data.depth, data.layer AS \"layer: Layer\",\n data.time FROM data WHERE data.trip = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "temperature",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 1,
+        "name": "location",
+        "type_info": "Json"
+      },
+      {
+        "ordinal": 2,
+        "name": "depth",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 3,
+        "name": "layer: Layer",
+        "type_info": {
+          "Custom": {
+            "name": "layer",
+            "kind": {
+              "Enum": [
+                "surface",
+                "middle",
+                "sea bed"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "time",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "806ba22cc3b53c033a21d36ddaf2f5e1ff9e925440977fd604732256ac8dc3da"
+}

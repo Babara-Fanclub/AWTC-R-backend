@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT name, path FROM paths WHERE uuid = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name",
+        "type_info": "Name"
+      },
+      {
+        "ordinal": 1,
+        "name": "path",
+        "type_info": "JsonArray"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "94004c34d969bc694c6b0bed6a8556d41cd6dd1d54cff01ead53aa9edf1e22d2"
+}

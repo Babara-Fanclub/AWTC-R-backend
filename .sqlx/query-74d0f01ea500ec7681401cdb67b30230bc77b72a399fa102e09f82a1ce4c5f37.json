@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT location, time FROM history ORDER BY time DESC LIMIT $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "location",
+        "type_info": "Json"
+      },
+      {
+        "ordinal": 1,
+        "name": "time",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "74d0f01ea500ec7681401cdb67b30230bc77b72a399fa102e09f82a1ce4c5f37"
+}

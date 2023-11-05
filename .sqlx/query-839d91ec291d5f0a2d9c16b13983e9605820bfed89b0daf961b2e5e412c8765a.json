@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO data (temperature, location, depth, layer, trip, time)\nVALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Float8",
+        "Json",
+        "Float8",
+        {
+          "Custom": {
+            "name": "layer",
+            "kind": {
+              "Enum": [
+                "surface",
+                "middle",
+                "sea bed"
+              ]
+            }
+          }
+        },
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "839d91ec291d5f0a2d9c16b13983e9605820bfed89b0daf961b2e5e412c8765a"
+}

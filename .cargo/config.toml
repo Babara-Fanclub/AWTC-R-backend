@@ -1,0 +1,5 @@
+[alias]
+w = [
+  "watch", "-qcx", "shuttle run --external --port 42069",
+  "-E", "RUST_LOG=debug,group-project-backend=trace,h2=warn"
+]
