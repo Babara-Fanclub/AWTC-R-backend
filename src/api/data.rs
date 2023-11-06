@@ -1,14 +1,14 @@
 //! Module for Actix services for collected data.
 
 use actix_web::{
-    error::{ErrorBadRequest, ErrorInternalServerError},
+    error::ErrorInternalServerError,
     get, post,
     web::{scope, Data, Json, Path, Query, ServiceConfig},
     HttpResponse, Responder, Result,
 };
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
-use time::OffsetDateTime;
+use time::{OffsetDateTime, UtcOffset};
 use uuid::Uuid;
 
 use crate::AppState;
@@ -46,15 +46,27 @@ impl Default for FormatType {
     }
 }
 
+time::serde::format_description!(
+    query_offset,
+    UtcOffset,
+    "[offset_hour padding:none]"
+);
+
 #[derive(Deserialize)]
 /// The query specification for getting data.
 struct DataQuery {
     #[serde(default)]
     /// The query to specify the format.
     format: FormatType,
-    #[serde(default)]
+    #[serde(default = "DataQuery::offset_default", with = "query_offset")]
     /// The query to specify the timezone offset for exported CSV.
-    offset: i8,
+    offset: UtcOffset,
+}
+
+impl DataQuery {
+    fn offset_default() -> UtcOffset {
+        UtcOffset::UTC
+    }
 }
 
 #[derive(Deserialize)]
@@ -217,7 +229,7 @@ async fn get_json(trip: Uuid, state: Data<AppState>) -> Result<HttpResponse> {
     Ok(HttpResponse::Ok().json(data))
 }
 
-async fn get_csv(trip: Uuid, offset: i8, state: Data<AppState>) -> Result<HttpResponse> {
+async fn get_csv(trip: Uuid, offset: UtcOffset, state: Data<AppState>) -> Result<HttpResponse> {
     let data = sqlx::query_as!(
         DataRecord,
         r#"SELECT data.temperature, data.location, data.depth, data.layer AS "layer: Layer",
@@ -249,10 +261,7 @@ WHERE data.trip = $1"#,
     }
     // Inserting data
     for mut item in data {
-        item.time = item.time.to_offset(
-            time::UtcOffset::from_hms(offset, 0, 0)
-                .map_err(|_| ErrorBadRequest("Invalid Timezone Offset"))?,
-        );
+        item.time = item.time.to_offset(offset);
         writer
             .serialize(DataRecordOutput::try_from(item)?)
             .map_err(|_| ErrorInternalServerError("An Error Occured When Fetching Data."))?
